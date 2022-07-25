@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model products {
+  productid          Int               @id
+  productname        String            @db.VarChar(255)
+  mainImage          String?           @db.VarChar
+  slug               String?           @db.VarChar(255)
+  productdescription String?           @db.VarChar(400)
+  tagline            String?           @db.VarChar(150)
+  categoryName       String?           @db.VarChar(55)
+  productVariants    productVariants[]
+}
+
+model productVariants {
+  variantID     Int      @id(map: "productVariantsv2_pkey")
+  baseProductID Int
+  variantName   String   @db.VarChar(255)
+  variantImage  String?  @db.VarChar(255)
+  variantPrice  Decimal? @db.Money
+  products      products @relation(fields: [baseProductID], references: [productid], onDelete: NoAction, onUpdate: NoAction, map: "productID_fkey")
+}
